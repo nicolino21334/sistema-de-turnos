@@ -1,0 +1,17 @@
+\# --- .NET / C# ---
+bin/
+obj/
+.vs/
+appsettings.Development.json
+\*.user #
+
+--- Node / React --
+node\_modules/
+dist/
+.env
+.env.local
+
+# --- Archivos del sistema u otros IDEs ---
+.vscode/
+.DS\_Store
+Thumbs.db
