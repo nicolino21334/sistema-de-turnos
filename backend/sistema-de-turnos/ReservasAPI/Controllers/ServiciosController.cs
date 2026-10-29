@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using ReservasAPI.DTOs;
 using ReservasAPI.Service;
 using Microsoft.AspNetCore.Authorization;
+using ReservasAPI.Repositories;
 
 namespace ReservasAPI.Controllers
 {
@@ -12,10 +13,12 @@ namespace ReservasAPI.Controllers
     public class ServiciosController : Controller
     {
         private readonly IServicioService _servicioService;
+        private readonly IServicioRepository _servicioRepository;
 
-        public ServiciosController(IServicioService servicioService)
+        public ServiciosController(IServicioService servicioService, IServicioRepository servicioRepository)
         {
             _servicioService = servicioService;
+            _servicioRepository = servicioRepository;
         }
         // GET: api/servicio
         [HttpGet]
@@ -68,6 +71,21 @@ namespace ReservasAPI.Controllers
             if (!result)
                 return NotFound(new { mensaje = $"No se encontro el servicio con ID: {id}" });
             return NoContent(); //204 No Content cuando la eliminacion es exitosa
+        }
+
+        //PUT: api/servicios/5/estado
+        [HttpPut("{id}/estado")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ToggleEstado(int id, [FromBody] bool activo)
+        {
+            var servicio = await _servicioRepository.GetByIdAsync(id);
+            if (servicio == null)
+            {
+                return NotFound("Cancha no encontrada.");
+            }
+            servicio.Activo = activo;
+            await _servicioRepository.UpdateAsync(servicio);
+            return NoContent();
         }
     }
 }

@@ -7,6 +7,7 @@
         public string Descripcion { get; set; } = string.Empty;
         public decimal Precio { get; set; }
         public int DuracionMinutos { get; set; }
-        
+        public bool Activo { get; set; } = true; // para indicar si las canchas estan habilitadas para su uso
+
     }
 }

@@ -30,6 +30,9 @@ namespace ReservasAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("Activo")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Descripcion")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -47,6 +50,71 @@ namespace ReservasAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Servicios");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Activo = true,
+                            Descripcion = "Sintético",
+                            DuracionMinutos = 0,
+                            Nombre = "Cancha 1 - Fútbol 5",
+                            Precio = 20000m
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Activo = true,
+                            Descripcion = "Sintético",
+                            DuracionMinutos = 0,
+                            Nombre = "Cancha 2 - Fútbol 5",
+                            Precio = 20000m
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Activo = true,
+                            Descripcion = "Sintético",
+                            DuracionMinutos = 0,
+                            Nombre = "Cancha 3 - Fútbol 5",
+                            Precio = 20000m
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Activo = true,
+                            Descripcion = "Cristal y sintético",
+                            DuracionMinutos = 0,
+                            Nombre = "Cancha 1 - Pádel",
+                            Precio = 15000m
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Activo = true,
+                            Descripcion = "Cristal y sintético",
+                            DuracionMinutos = 0,
+                            Nombre = "Cancha 2 - Pádel",
+                            Precio = 15000m
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Activo = true,
+                            Descripcion = "Piso flotante",
+                            DuracionMinutos = 0,
+                            Nombre = "Cancha - Básquet",
+                            Precio = 18000m
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Activo = true,
+                            Descripcion = "Piso parquet",
+                            DuracionMinutos = 0,
+                            Nombre = "Cancha - Vóley",
+                            Precio = 16000m
+                        });
                 });
 
             modelBuilder.Entity("ReservasAPI.Entities.Turno", b =>

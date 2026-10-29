@@ -49,6 +49,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 //inyeccion de dependencias de servicios y repositorios
 builder.Services.AddScoped<IServicioRepository, ServicioRepository>();
 builder.Services.AddScoped<IServicioService, ServicioService>();
+builder.Services.AddScoped<ITurnoRepository, TurnoRepository>();
+builder.Services.AddScoped<ITurnoService, TurnoService>();
 
 // inyeccion de dependencias de usuario y autenticacion
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();

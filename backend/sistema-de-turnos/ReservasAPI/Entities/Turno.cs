@@ -10,7 +10,10 @@
         public int UsuarioId { get; set; }
         public Usuario? Usuario { get; set; }
 
+        //clave foranea y relacion con servicio
         public int ServicioId { get; set; }
         public Servicio? Servicio { get; set; }
+
+        
     }
 }
