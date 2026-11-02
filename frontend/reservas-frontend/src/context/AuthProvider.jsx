@@ -1,9 +1,7 @@
-import { createContext, useState } from "react";
+import { useState } from "react";
 import api from "../services/api";
+import { AuthContext } from "./AuthContext";
 
-const AuthContext = createContext();
-
-//Funcion auxiliar para leer los datos dentro del Token JWT sin librerias extras
 const parseJwt = (token) => {
   try {
     const base64Url = token.split(".")[1];
@@ -31,48 +29,37 @@ export const AuthProvider = ({ children }) => {
           email:
             decoded.email ||
             decoded.sub ||
-            decoded["[suspicius link removed]"] ||
+            decoded["[suspicious link removed]"] ||
             "",
           role:
-            decoded.role ||
-            decoded.sub ||
-            decoded["[suspicius link removed]"] ||
-            "Cliente",
+            decoded.role || decoded["[suspicious link removed]"] || "Cliente",
         };
       }
     }
-
     return null;
   });
-
-  //funcion para iniciar sesion
   const login = async (email, password) => {
     const response = await api.post("/auth/login", { email, password });
     const { token } = response.data;
-
     localStorage.setItem("token", token);
     const decoded = parseJwt(token);
-
     setUser({
-      email: decoded?.email || decoded?.sub || email,
-      role: decoded?.role || decoded?.["[suspicius link removed]"] || "Cliente",
+      email: decoded.email || decoded.sub || email,
+      role: decoded.role || decoded["[suspicious link removed]"] || "Cliente",
     });
 
     return response.data;
   };
 
-  //funsion para regiustrarse
   const register = async (nombre, email, password) => {
     const response = await api.post("/auth/register", {
       nombre,
       email,
       password,
     });
-
     return response.data;
   };
 
-  //funcion para cerrar sesion
   const logout = () => {
     localStorage.removeItem("token");
     setUser(null);

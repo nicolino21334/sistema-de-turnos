@@ -14,9 +14,9 @@ export default function Home() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {!user ? (
         /* VISTA PARA VISITANTES (NO LOGUEADOS) */
-        <div className="flex flex-col items-center text-center space-y-8 py-8">
+        <div className="flex flex-col items-center text-center space-y-6 py-6">
           {/* Badge decorarivo */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-verde-800/10 border border-verde-700/30 text-verde-900 font-semibold text-sm">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-verde-600/15 border border-verde-600/30 text-verde-600 font-semibold text-sm">
             <Trophy className="w-4 h-4 text-verde-600" />
             <span>Reserva Online Rapida y Sencella</span>
           </div>
@@ -38,14 +38,14 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto pt-4">
             <Link
               to="/login"
-              className="px-8 py-4 rounded-xl bg-verde-600 hover:bg-verde-700 text-fondo font-bold text-lg shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2"
+              className="px-8 py-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-[#e7e7c9] font-extrabold text-lg shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2"
             >
               <span>Iniciar Sesion</span>
-              <ArrowRight className="w-5 h-5" />
+              <ArrowRight className="w-5 h-5 text-[#e7e7c9]" />
             </Link>
             <Link
               to="/registro"
-              className="px-8 py-4 rounded-xl bg-verde-800 hover:bg-verde-900 text-fondo font-semibold text-lg shadow-md transition-all flex items-center justify-center"
+              className="px-8 py-4 rounded-xl bg-verde-900 hover:bg-verde-800 text-[#e7e7c9] font-extrabold text-lg shadow-md transition-all flex items-center justify-center border border-verde-700"
             >
               Crear una cuenta
             </Link>
@@ -53,8 +53,8 @@ export default function Home() {
 
           {/* Tarjeta de beneficios */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full pt-16">
-            <div className="bg-white/60 backdrop-blur-sm p-6 rounded-2xl border border-verde-900/10 shadow-sm text-left">
-              <div className="bg-verde-700/10 w-12 h-12 rounded-xl flex items-center justify-center text-verde-700 mb-4">
+            <div className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl border border-verde-900/15 shadow-sm text-left">
+              <div className="bg-verde-600/15 w-12 h-12 rounded-xl flex items-center justify-center text-verde-600 mb-4">
                 <Clock className="w-6 h-6" />
               </div>
               <h3 className="font-bold text-verde-900 text-lg mb-1">
@@ -65,8 +65,8 @@ export default function Home() {
                 08:00 a 20:00 hs.
               </p>
             </div>
-            <div className="bg-white/60 backdrop-blur-sm p-6 rounded-2xl border border-verde-900/10 shadow-sm text-left">
-              <div className="bg-verde-700/10 w-12 h-12 rounded-xl flex items-center justify-center text-verde-700 mb-4">
+            <div className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl border border-verde-900/15 shadow-sm text-left">
+              <div className="bg-verde-600/15 w-12 h-12 rounded-xl flex items-center justify-center text-verde-700 mb-4">
                 <CalendarCheck className="w-6 h-6" />
               </div>
               <h3 className="font-bold text-verde-900 text-lg mb-1">
@@ -77,8 +77,8 @@ export default function Home() {
                 partido.
               </p>
             </div>
-            <div className="bg-white/60 backdrop-blur-sm p-6 rounded-2xl border border-verde-900/10 shadow-sm text-left">
-              <div className="bg-verde-700/10 w-12 h-12 rounded-xl flex items-center justify-center text-verde-700 mb-4">
+            <div className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl border border-verde-900/15 shadow-sm text-left">
+              <div className="bg-verde-600/15 w-12 h-12 rounded-xl flex items-center justify-center text-verde-600 mb-4">
                 <ShieldCheck className="w-6 h-6" />
               </div>
               <h3 className="font-bold text-verde-900 text-lg mb-1">
