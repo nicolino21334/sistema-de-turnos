@@ -15,7 +15,7 @@ export default function Registro() {
   const [password, setPassword] = useState("");
   const [nombre, setNombre] = useState("");
   const [error, setError] = useState("");
-  const { loading, setLoading } = useAuth(false);
+  const [loading, setLoading] = useState(false);
   const [exito, setExito] = useState(false);
 
   const { register } = useAuth();

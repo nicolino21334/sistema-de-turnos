@@ -6,13 +6,42 @@ import {
   ShieldCheck,
   Clock,
   ArrowRight,
+  Zap,
+  Coffee,
+  Car,
+  Calendar,
 } from "lucide-react";
+
+const SERVICIOS = [
+  {
+    icono: <Zap className="w-5 h-5 text-emerald-600" />,
+    titulo: "Iluminacion LED Pro",
+    desc: "Canchas 100% equipadas para partidos nocturnos.",
+  },
+  {
+    icono: <Car className="w-5 h-5 text-emerald-600" />,
+    titulo: "Estacionamiento Gratis",
+    desc: "Predio privado con seguridad las 24 hs.",
+  },
+  {
+    icono: <ShieldCheck className="w-5 h-5 text-emerald-600" />,
+    titulo: "Vestuarios &amp; Duchas",
+    desc: "Instalaciones sanitarias con agua caliente.",
+  },
+  {
+    icono: <Coffee className="w-5 h-5 text-emerald-600" />,
+    titulo: "Buffet &amp; Resto Bar",
+    desc: "El lugar ideal para el tercer tiempo.",
+  },
+];
 
 export default function Home() {
   const { user } = useAuth();
+  const nombreUsuario =
+    user?.nombre || user?.nombreUsuario || user?.name || "Jugador";
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      {!user ? (
+      {!user && (
         /* VISTA PARA VISITANTES (NO LOGUEADOS) */
         <div className="flex flex-col items-center text-center space-y-6 py-6">
           {/* Badge decorarivo */}
@@ -91,28 +120,85 @@ export default function Home() {
             </div>
           </div>
         </div>
-      ) : (
-        /* VISTA PARA USUARIOS LOGUEADOS(BIENVENIDA Y ACCESO DEPORTIVO) */
-        <div className="space-y-8">
-          <div className="bg-verde-900 text-fondo p-8 rounded-3xl shadow-xl border border-verde-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div>
-              <h1 className="text-2xl sm:text-4xl font-bold">
-                ¡Hola de nuevo! 👋
+      )}
+      {user && (
+        <>
+          <div className="bg-verde-900 text-white rounded-3xl p-8 sm:p-10 shadow-2xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="max-w-lg text-center md:text-left z-10">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-bold mb-4 border border-emerald-500/30">
+                <Trophy className="w-4 h-4" />
+                Panel de Jugador
+              </div>
+              <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight leading-tight">
+                ¡Hola de nuevo, {nombreUsuario}!
               </h1>
-              <p className="text-fondo/80 mt-1">
-                Seleccioná un deporte para ver las canchas disponibles y
-                reservar tu turno.
+              <p className="mt-3 text-sm sm:text-base text-emerald-100 font-medium">
+                Yendo a la sección{" "}
+                <span className="text-emerald-400 font-bold">"Canchas"</span>{" "}
+                vas a poder encontrar las canchas de las distintas disciplinas
+                que tenemos disponibles y reservar tu turno.
               </p>
+              <div className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-verde-950 font-extrabold text-sm shadow-lg transition-all">
+                <Link
+                  to="/canchas"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-verde-950 font-extrabold text-sm shadow-lg transition-all"
+                >
+                  <Calendar className="w-4 h-4" />
+                  Ir a Canchas
+                </Link>
+                <Link
+                  to="/mis-reservas"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-extrabold text-sm transition-all border border-white/20"
+                >
+                  Ver Mis Turnos
+                </Link>
+              </div>
+            </div>
+            <div className="text-8xl opacity-90 hidden md:block select-none">
+              🏆
             </div>
           </div>
-
-          {/* Aca en el siguiente paso renderizaremos las grillas de Deportes/Canchas */}
-          <div className="bg-white/40 border border-verde-900/10 rounded-2xl p-8 text-center text-verde-900">
-            <p className="font-semibold text-lg">
-              Próximo paso: Catálogo de Canchas por Deporte
-            </p>
+          {/*Tarjeta para ir a canchas */}
+          <Link
+            to="/canchas"
+            className="flex items-center justify-between p-6 bg-white rounded-3xl shadow-md border border-verde-900/10 hover:border-emerald-500 hover:shadow-xl transition-all group cursor-pointer"
+          >
+            <div className="flex items-center gap-4 p-5">
+              <h3 className="text-lg font-extrabold text-verde-900 group-hover:text-emerald-700 transition-colors">
+                Ver Canchas por Disciplina
+              </h3>
+              <p className="text-xs sm:text-sm text-verde-800 font-medium mt-0.5">
+                Hacé clic acá para explorar las canchas de Fútbol, Pádel,
+                Básquet y Vóley con sus precios y características.
+              </p>
+            </div>
+            <ArrowRight className="w-6 h-6 text-emerald-600 group-hover:translate-x-1.5 transition-transform shrink-0 hidden sm:block" />
+          </Link>
+          {/*Servicios del complejo */}
+          <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-verde-900/10">
+            <h2 className="text-xl font-extrabold text-verde-900 mb-6 text-center">
+              Servicios de nuestro complejo
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {SERVICIOS.map((s, idx) => (
+                <div
+                  key={idx}
+                  className="flex flex-col items-center text-center p-3"
+                >
+                  <div className="p-3 bg-emerald-100 rounded-2xl mb-3">
+                    {s.icono}
+                  </div>
+                  <h4 className="font-bold text-verde-900 text-sm mb-1">
+                    {s.titulo}
+                  </h4>
+                  <p className="text-xs text-verde-800 font-medium leading-relaxed">
+                    {s.desc}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        </>
       )}
     </div>
   );

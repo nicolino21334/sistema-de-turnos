@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/useAuth";
-import { Calendar, User, LogOut, Trophy } from "lucide-react";
+import { Calendar, User, LogOut, Trophy, LayoutGrid } from "lucide-react";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -30,6 +30,13 @@ export default function Navbar() {
         </Link>
         {/* NAVEGACION y USUSARIO */}
         <nav className="flex items-center gap-4">
+          <Link
+            to="/canchas"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-xs sm:text-sm font-bold text-emerald-100 transition-colors"
+          >
+            <LayoutGrid className="w-4 h-4 text-emerald-400" />
+            Canchas
+          </Link>
           {user ? (
             <>
               {/* Enlace para mis turnos / Reserva del cliente */}

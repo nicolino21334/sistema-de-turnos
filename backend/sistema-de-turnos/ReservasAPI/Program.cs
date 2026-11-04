@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using ReservasAPI.Repositories;
 using ReservasAPI.Service;
 
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // REGISTRO DE SERVICIOS (todo builder.service va aca arriba)
@@ -86,8 +88,22 @@ options.RequireHttpsMetadata = false; options.SaveToken = true; options.TokenVal
 };
 });
 
+//CONFIGURACION DE PERMISO DE CORS (Cross-Origin Resource Sharing)
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", builder => //puerto de react
+    {
+        builder.SetIsOriginAllowed(origin => true) //permite cualquier origen local o remoto
+               .AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+    });
+});
+
 //CONSTRUCCION DE LA APLICACION (linea divisoria)
 var app = builder.Build();
+
 
 
 
@@ -102,6 +118,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowFrontend");
 
 app.UseAuthentication();
 

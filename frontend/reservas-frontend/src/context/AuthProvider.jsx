@@ -20,33 +20,37 @@ const parseJwt = (token) => {
 };
 
 export const AuthProvider = ({ children }) => {
+  const obtenerUsuarioDeToken = (token) => {
+    if (!token) return null;
+    const decoded = parseJwt(token);
+    if (!decoded) return null;
+
+    const keys = Object.keys(decoded);
+    const emailKey = keys.find((k) => k.toLowerCase().includes("email"));
+    const roleKey = keys.find((k) => k.toLowerCase().includes("role"));
+
+    return {
+      email:
+        decoded.email || decoded.sub || (emailKey ? decoded[emailKey] : ""),
+      role: decoded.role || (roleKey ? decoded[roleKey] : "Cliente"),
+    };
+  };
   const [user, setUser] = useState(() => {
     const token = localStorage.getItem("token");
-    if (token) {
-      const decoded = parseJwt(token);
-      if (decoded) {
-        return {
-          email:
-            decoded.email ||
-            decoded.sub ||
-            decoded["[suspicious link removed]"] ||
-            "",
-          role:
-            decoded.role || decoded["[suspicious link removed]"] || "Cliente",
-        };
-      }
-    }
-    return null;
+    return obtenerUsuarioDeToken(token);
   });
+
   const login = async (email, password) => {
     const response = await api.post("/auth/login", { email, password });
     const { token } = response.data;
+
     localStorage.setItem("token", token);
-    const decoded = parseJwt(token);
-    setUser({
-      email: decoded.email || decoded.sub || email,
-      role: decoded.role || decoded["[suspicious link removed]"] || "Cliente",
-    });
+    //asignamos el usuario leyendo las claves dinamicamente
+    const usuarioLogueado = obtenerUsuarioDeToken(token) || {
+      email,
+      role: "Cliente",
+    };
+    setUser(usuarioLogueado);
 
     return response.data;
   };

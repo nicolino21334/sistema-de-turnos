@@ -3,20 +3,19 @@ import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Registro from "./pages/Registro";
+import Canchas from "./pages/Canchas";
 
 export default function App() {
   return (
     <Router>
-      <div
-        className="min-h-screen bg-fondo flex flex-col font-sans"
-        style={{ backgroundColor: "#e7e7c9", color: "#182c25" }}
-      >
+      <div className="min-h-screen bg-emerald-50/30 flex flex-col font-sans">
         <Navbar />
         <main className="flex-1">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/registro" element={<Registro />} />
+            <Route path="/canchas" element={<Canchas />} />
           </Routes>
         </main>
       </div>
