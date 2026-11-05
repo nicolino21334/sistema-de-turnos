@@ -1,5 +1,13 @@
 import { useState } from "react";
-import { ArrowLeft, Trophy, MapPin } from "lucide-react";
+import {
+  ArrowLeft,
+  Trophy,
+  MapPin,
+  Clock,
+  X,
+  Calendar,
+  CheckCircle,
+} from "lucide-react";
 
 //Lista de Deportes
 const DEPORTES = [
@@ -130,8 +138,47 @@ const CANCHAS_MOCK = {
   ],
 };
 
+const HORARIOS_DISPONIBLES = [
+  "08:00",
+  "09:00",
+  "10:00",
+  "11:00",
+  "12:00",
+  "13:00",
+  "14:00",
+  "15:00",
+  "16:00",
+  "17:00",
+  "18:00",
+  "19:00",
+  "20:00",
+];
+
 export default function Canchas() {
   const [deporteSeleccionado, setDeporteSeleccionado] = useState(null);
+
+  const [canchaEditar, setCanchaEditar] = useState(null);
+  const [fechaSeleccionada, setFechaSeleccionada] = useState(
+    new Date().toISOString().split("T")[0],
+  );
+  const [horarioSeleccionado, setHorarioSeleccionado] = useState("");
+  const [reservaConfirmada, setreservaConfirmada] = useState(false);
+
+  const handleAbrirModal = (cancha) => {
+    setCanchaEditar(cancha);
+    setHorarioSeleccionado("");
+    setreservaConfirmada(false);
+  };
+
+  const handleCerrarModal = () => {
+    setCanchaEditar(null);
+    setreservaConfirmada(false);
+  };
+
+  const handlConfirmarReserva = () => {
+    if (!horarioSeleccionado) return;
+    setreservaConfirmada(true);
+  };
 
   //Deporte actual sleccionado
   const deporteActual = DEPORTES.find(
@@ -243,7 +290,7 @@ export default function Canchas() {
                     </div>
                     <p className="text-xs text-verde-800 font-semibold mb-4 flex items-center gap-1.5">
                       <MapPin className="w-4 h-4 text-emerald-700 shrink-0" />
-                      Superficie:{" "}
+                      Superficie:
                       <span className="font-bold text-verde-900">
                         {cancha.superficie}
                       </span>
@@ -260,6 +307,7 @@ export default function Canchas() {
                     </div>
                     <button
                       type="button"
+                      onClick={() => handleAbrirModal(cancha)}
                       className="py-2.5 px-5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs sm:text-sm shadow transition-colors flex items-center gap-2"
                     >
                       Ver Turnos
@@ -271,6 +319,114 @@ export default function Canchas() {
           </div>
         )}
       </div>
+      {canchaEditar && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl relative">
+            <button
+              onClick={handleCerrarModal}
+              className="absolute top-4 right-4 p-2 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            {!reservaConfirmada ? (
+              <>
+                <div className="mb-6">
+                  <span className="text-xs font-bold text-emerald-700 uppercase tracking-wider block mb-1">
+                    Reservar Turno
+                  </span>
+                  <h3 className="text-xl font-black text-verde-900">
+                    {canchaEditar.nombre}
+                  </h3>
+                  <p className="text-xs text-verde-800 mt-1">
+                    Precio:{" "}
+                    <span className="font-bold text-emerald-700">
+                      ${canchaEditar.precio.toLocaleString("es-AR")} / hora
+                    </span>
+                  </p>
+                </div>
+
+                {/* Seleccion de fecha */}
+                <div className="m-5">
+                  <label className="flex items-center gap-1.5 text-xs font-bold text-verde-900 mb-2">
+                    <Calendar className="w-4 h-4 text-emerald-600">
+                      Selecciona la fecha:
+                    </Calendar>
+                  </label>
+                  <input
+                    type="date"
+                    value={fechaSeleccionada}
+                    onChange={(e) => setFechaSeleccionada(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-bold text-verde-900 focus:outline-none focus:border-emerald-500 shadow-sm"
+                  />
+                </div>
+
+                {/* Seleccion de Horario (de 08:00 a 20:00) */}
+                <div className="mb-6">
+                  <label className="flex items-center gap-1.5 text-xs font-bold text-verde-900 mb-2">
+                    <Clock className="w-4 h-4 text-emerald-600" />
+                    Horarios Disponibles (08:00 a 20:00 hs)
+                  </label>
+                  <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 max-h-48 overflow-y-auto p-1">
+                    {HORARIOS_DISPONIBLES.map((hora) => (
+                      <button
+                        key={hora}
+                        type="button"
+                        onClick={() => setHorarioSeleccionado(hora)}
+                        className={`py-2 rounded-xl text-xs font-extrabold border transition-all ${horarioSeleccionado === hora ? "bg-emerald-600 text-white border-emerald-600 shadow-md scale-105" : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-emerald-50 hover:border-emerald-300"}`}
+                      >
+                        {hora} hs
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Boton de confirmacion */}
+                <button
+                  type="button"
+                  disabled={!horarioSeleccionado}
+                  onClick={handlConfirmarReserva}
+                  className={`w-full py-3 rounded-2xl font-black text-sm shadow-lg transition-all ${horarioSeleccionado ? "bg-emerald-600 hover:bg-emerald-500 text-white cursor-pointer" : "bg-slate-200 text-slate-400 cursor-not-allowed"}`}
+                >
+                  {horarioSeleccionado
+                    ? `Confirmar para las ${horarioSeleccionado} hs`
+                    : "Seleccioná un horari"}
+                </button>
+              </>
+            ) : (
+              /* Pantalla de confirmacion exitosa */
+              <div className="text-center py-6">
+                <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <CheckCircle className="w-10 h-10" />
+                </div>
+                <h3 className="text-2xl font-black text-verde-900 mb-2">
+                  ¡Turno Reservado!
+                </h3>
+                <p className="text-xs text-verde-800 font-medium mb-6">
+                  Tu Reserva para{" "}
+                  <span className="font-bold text-verde-900">
+                    {canchaEditar.nombre}
+                  </span>
+                  el día{" "}
+                  <span className="font-bold text-verde-900">
+                    {fechaSeleccionada}
+                  </span>{" "}
+                  a las{" "}
+                  <span className="font-bold text-emerald-700">
+                    {horarioSeleccionado} hs
+                  </span>
+                  ha sido confirmada con éxito.
+                </p>
+                <button
+                  onClick={handleCerrarModal}
+                  className="w-full py-3 rounded-2xl bg-verde-950 text-verde-900 font-extrabold text-sm hover:bg-verde-900 hover:text-white transition-colors shadow"
+                >
+                  Entendido
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

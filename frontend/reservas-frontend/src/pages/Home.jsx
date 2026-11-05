@@ -123,7 +123,7 @@ export default function Home() {
       )}
       {user && (
         <>
-          <div className="bg-verde-900 text-white rounded-3xl p-8 sm:p-10 shadow-2xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className=" bg-verde-900 text-white rounded-3xl p-8 sm:p-10 shadow-2xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6 mb-10">
             <div className="max-w-lg text-center md:text-left z-10">
               <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-bold mb-4 border border-emerald-500/30">
                 <Trophy className="w-4 h-4" />
@@ -132,13 +132,13 @@ export default function Home() {
               <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight leading-tight">
                 ¡Hola de nuevo, {nombreUsuario}!
               </h1>
-              <p className="mt-3 text-sm sm:text-base text-emerald-100 font-medium">
+              <p className="text-sm sm:text-base text-emerald-100 font-medium leading-relaxed mb-8">
                 Yendo a la sección{" "}
                 <span className="text-emerald-400 font-bold">"Canchas"</span>{" "}
                 vas a poder encontrar las canchas de las distintas disciplinas
                 que tenemos disponibles y reservar tu turno.
               </p>
-              <div className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-verde-950 font-extrabold text-sm shadow-lg transition-all">
+              <div className="pt-2 flex flex-wrap gap-3 justify-center md:justify-start">
                 <Link
                   to="/canchas"
                   className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-verde-950 font-extrabold text-sm shadow-lg transition-all"
@@ -161,7 +161,7 @@ export default function Home() {
           {/*Tarjeta para ir a canchas */}
           <Link
             to="/canchas"
-            className="flex items-center justify-between p-6 bg-white rounded-3xl shadow-md border border-verde-900/10 hover:border-emerald-500 hover:shadow-xl transition-all group cursor-pointer"
+            className="flex items-center justify-between p-6 sm:p-8 bg-white rounded-3xl shadow-md border border-verde-900/10 hover:border-emerald-500 hover:shadow-xl transition-all group cursor-pointer mb-10"
           >
             <div className="flex items-center gap-4 p-5">
               <h3 className="text-lg font-extrabold text-verde-900 group-hover:text-emerald-700 transition-colors">
