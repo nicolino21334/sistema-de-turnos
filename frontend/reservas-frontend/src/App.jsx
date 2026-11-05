@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Registro from "./pages/Registro";
 import Canchas from "./pages/Canchas";
+import MisReservas from "./pages/MisReservas";
 
 export default function App() {
   return (
@@ -16,6 +17,8 @@ export default function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/registro" element={<Registro />} />
             <Route path="/canchas" element={<Canchas />} />
+            <Route path="/mis-reservas" element={<MisReservas />} />
+            <Route path="/mis-turnos" element={<MisReservas />} />
           </Routes>
         </main>
       </div>

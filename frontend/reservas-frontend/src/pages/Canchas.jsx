@@ -8,6 +8,7 @@ import {
   Calendar,
   CheckCircle,
 } from "lucide-react";
+import useAuth from "../context/useAuth";
 
 //Lista de Deportes
 const DEPORTES = [
@@ -155,6 +156,7 @@ const HORARIOS_DISPONIBLES = [
 ];
 
 export default function Canchas() {
+  const { user } = useAuth;
   const [deporteSeleccionado, setDeporteSeleccionado] = useState(null);
 
   const [canchaEditar, setCanchaEditar] = useState(null);
@@ -162,23 +164,46 @@ export default function Canchas() {
     new Date().toISOString().split("T")[0],
   );
   const [horarioSeleccionado, setHorarioSeleccionado] = useState("");
-  const [reservaConfirmada, setreservaConfirmada] = useState(false);
+  const [reservaConfirmada, setReservaConfirmada] = useState(false);
 
   const handleAbrirModal = (cancha) => {
     setCanchaEditar(cancha);
     setHorarioSeleccionado("");
-    setreservaConfirmada(false);
+    setReservaConfirmada(false);
   };
 
   const handleCerrarModal = () => {
     setCanchaEditar(null);
-    setreservaConfirmada(false);
+    setReservaConfirmada(false);
   };
 
   const handlConfirmarReserva = () => {
-    if (!horarioSeleccionado) return;
-    setreservaConfirmada(true);
+    if (!horarioSeleccionado || !canchaEditar) return;
+    const nuevaReserva = {
+      id: `${canchaEditar.id}-${fechaSeleccionada}-${horarioSeleccionado}`,
+      usuarioEmail: user?.email || "invitado",
+      canchaId: canchaEditar.id,
+      canchaNombre: canchaEditar.nombre,
+      deporteNombre: deporteActual?.nombre || "Deporte",
+      deporteIcono: deporteActual?.icono || "⚽",
+      fecha: fechaSeleccionada,
+      hora: horarioSeleccionado,
+      precio: canchaEditar.precio,
+      estado: "confirmado",
+    };
+    //guardamos la reserva en el estad y el localStorage
+    const reservasActualizadas = [...reservas, nuevaReserva];
+    setReservas(reservasActualizadas);
+    localStorage.setItem("reservas", JSON.stringify(reservasActualizadas));
+
+    setReservaConfirmada(true);
   };
+
+  //Estado de reservas (se lee de localStorae)
+  const [reservas, setReservas] = useState(() => {
+    const guardadas = localStorage.getItem("reservas");
+    return guardadas ? JSON.parse(guardadas) : [];
+  });
 
   //Deporte actual sleccionado
   const deporteActual = DEPORTES.find(
@@ -367,16 +392,35 @@ export default function Canchas() {
                     Horarios Disponibles (08:00 a 20:00 hs)
                   </label>
                   <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 max-h-48 overflow-y-auto p-1">
-                    {HORARIOS_DISPONIBLES.map((hora) => (
-                      <button
-                        key={hora}
-                        type="button"
-                        onClick={() => setHorarioSeleccionado(hora)}
-                        className={`py-2 rounded-xl text-xs font-extrabold border transition-all ${horarioSeleccionado === hora ? "bg-emerald-600 text-white border-emerald-600 shadow-md scale-105" : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-emerald-50 hover:border-emerald-300"}`}
-                      >
-                        {hora} hs
-                      </button>
-                    ))}
+                    {HORARIOS_DISPONIBLES.map((hora) => {
+                      const hoyStr = new Date().toISOString().split("T")[0];
+                      const esHoy = fechaSeleccionada === hoyStr;
+
+                      const horaNumero = parseInt(hora.split(":")[0], 10);
+                      const horaActual = new Date().getHours();
+
+                      const estaPasado = esHoy && horaNumero <= horaActual;
+
+                      const estaReservado = reservas.some(
+                        (r) =>
+                          r.canchaId === canchaEditar.id &&
+                          r.fecha === fechaSeleccionada &&
+                          r.hora === hora,
+                      );
+
+                      const dehabilitado = estaPasado || estaReservado;
+
+                      return (
+                        <button
+                          key={hora}
+                          type="button"
+                          onClick={() => setHorarioSeleccionado(hora)}
+                          className={`py-2 rounded-xl text-xs font-extrabold border transition-all ${dehabilitado ? "bg-slate-100 text-slate-300 border-slate-200 cursor-not-allowed line-through opacity-60" : horarioSeleccionado === hora ? "bg-emerald-600 text-white border-emerald-600 shadow-md scale-105" : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-emerald-50 hover:border-emerald-300"}`}
+                        >
+                          {hora} hs
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 
