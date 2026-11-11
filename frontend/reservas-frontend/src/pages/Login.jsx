@@ -178,7 +178,7 @@ export default function Login() {
         >
           ¿No tenés cuenta todavia?{" "}
           <Link
-            to="/registrarse"
+            to="/registro"
             className="font-extrabold text-emerald-700 hover:underline"
             style={{ marginLeft: "4px" }}
           >

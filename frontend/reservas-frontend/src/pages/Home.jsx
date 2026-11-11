@@ -47,7 +47,7 @@ export default function Home() {
           {/* Badge decorarivo */}
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-verde-600/15 border border-verde-600/30 text-verde-600 font-semibold text-sm">
             <Trophy className="w-4 h-4 text-verde-600" />
-            <span>Reserva Online Rapida y Sencella</span>
+            <span>Reserva Online Rapida y Sencilla</span>
           </div>
 
           {/* TITULO PRINCIPAL */}

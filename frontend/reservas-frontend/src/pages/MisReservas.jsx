@@ -1,22 +1,40 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Calendar, Clock, Trash2, Trophy, CheckCircle } from "lucide-react";
+import api from "../services/api";
 
 export default function MisReservas() {
-  const [reservas, setReservas] = useState(() => {
-    const guardadas = localStorage.getItem("reservas");
-    return guardadas ? JSON.parse(guardadas) : [];
-  });
-
+  const [reservas, setReservas] = useState([]);
+  const [cargando, setcargando] = useState(true);
   //function para cancelar
-  const handleCancelarReserva = (idReserva) => {
-    const actualizadas = reservas.filter((r) => {
-      if (!r.id) return false;
-      return String(r.id) !== String(idReserva);
-    });
-    setReservas(actualizadas);
-    localStorage.setItem("reservas", JSON.stringify(actualizadas));
+  useEffect(() => {
+    const obtenerReservas = async () => {
+      try {
+        const response = await api.get("/reservas/misreservas");
+        setReservas(response.data);
+      } catch (error) {
+        console.error("Error al obtener mis reservas:", error);
+      } finally {
+        setcargando(false);
+      }
+    };
+    obtenerReservas();
+  }, []);
+
+  const handleCancelarReserva = async (idReserva) => {
+    try {
+      await api.delete(`/reservas/${idReserva}}`);
+
+      setReservas((prev) => prev.filter((r) => r.id !== idReserva));
+    } catch (error) {
+      console.error("Error al cancelar la reserva:", error);
+      alert("No se pudo cancelar el turno. Intentalo de nuevo.");
+    }
   };
+
+  if (cargando) {
+    return <div className="p-8 text-center">Cargando tus reservas...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-emerald-50/40 py-10 px-4 sm:px-6 lg:px-8">

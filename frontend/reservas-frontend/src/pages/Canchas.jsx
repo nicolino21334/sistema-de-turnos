@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ArrowLeft,
   Trophy,
@@ -9,6 +9,8 @@ import {
   CheckCircle,
 } from "lucide-react";
 import useAuth from "../context/useAuth";
+import { useNavigate } from "react-router-dom";
+import api from "../services/api";
 
 //Lista de Deportes
 const DEPORTES = [
@@ -157,7 +159,12 @@ const HORARIOS_DISPONIBLES = [
 
 export default function Canchas() {
   const { user } = useAuth;
+  const navigate = useNavigate();
   const [deporteSeleccionado, setDeporteSeleccionado] = useState(null);
+  const [reservas, setReservas] = useState([]);
+
+  console.log("🔍 Estado actual de user en Canchas:", user);
+  console.log("🔍 Token en localStorage:", localStorage.getItem("token"));
 
   const [canchaEditar, setCanchaEditar] = useState(null);
   const [fechaSeleccionada, setFechaSeleccionada] = useState(
@@ -167,6 +174,13 @@ export default function Canchas() {
   const [reservaConfirmada, setReservaConfirmada] = useState(false);
 
   const handleAbrirModal = (cancha) => {
+    const token = localStorage.getItem("token");
+
+    if (!user && !token) {
+      navigate("/login");
+      return;
+    }
+
     setCanchaEditar(cancha);
     setHorarioSeleccionado("");
     setReservaConfirmada(false);
@@ -177,33 +191,45 @@ export default function Canchas() {
     setReservaConfirmada(false);
   };
 
-  const handlConfirmarReserva = () => {
+  const handlConfirmarReserva = async () => {
     if (!horarioSeleccionado || !canchaEditar) return;
-    const nuevaReserva = {
-      id: `${canchaEditar.id}-${fechaSeleccionada}-${horarioSeleccionado}`,
-      usuarioEmail: user?.email || "invitado",
-      canchaId: canchaEditar.id,
-      canchaNombre: canchaEditar.nombre,
-      deporteNombre: deporteActual?.nombre || "Deporte",
-      deporteIcono: deporteActual?.icono || "⚽",
-      fecha: fechaSeleccionada,
-      hora: horarioSeleccionado,
-      precio: canchaEditar.precio,
-      estado: "confirmado",
-    };
-    //guardamos la reserva en el estad y el localStorage
-    const reservasActualizadas = [...reservas, nuevaReserva];
-    setReservas(reservasActualizadas);
-    localStorage.setItem("reservas", JSON.stringify(reservasActualizadas));
+    try {
+      const datosReserva = {
+        canchaId: canchaEditar.id,
+        fecha: fechaSeleccionada,
+        hora: horarioSeleccionado,
+      };
 
-    setReservaConfirmada(true);
+      const response = await api.post("/reservas", datosReserva);
+
+      const reservaCreada = response.data || {
+        ...datosReserva,
+        id: `${canchaEditar.id}-${fechaSeleccionada}-${horarioSeleccionado}`,
+      };
+      console.log("Reserva Creada en el servidor:", response.data);
+
+      setReservas((prev) => [...prev, reservaCreada]);
+      setReservaConfirmada(true);
+    } catch (error) {
+      console.error("Error al guardar la reserva en la api:", error);
+      alert(
+        error.response?.data?.mensaje || "Hubo un error al procesar la reserva",
+      );
+    }
   };
+  useEffect(() => {
+    const cargarReservas = async () => {
+      try {
+        const response = await api.get("/reservas");
+        setReservas(Array.isArray(response.data) ? response.data : []);
+      } catch (error) {
+        console.error("Error al obtener reservas ocupadas:", error);
+        setReservas([]);
+      }
+    };
 
-  //Estado de reservas (se lee de localStorae)
-  const [reservas, setReservas] = useState(() => {
-    const guardadas = localStorage.getItem("reservas");
-    return guardadas ? JSON.parse(guardadas) : [];
-  });
+    cargarReservas();
+  }, []);
 
   //Deporte actual sleccionado
   const deporteActual = DEPORTES.find(
@@ -393,31 +419,25 @@ export default function Canchas() {
                   </label>
                   <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 max-h-48 overflow-y-auto p-1">
                     {HORARIOS_DISPONIBLES.map((hora) => {
-                      const hoyStr = new Date().toISOString().split("T")[0];
-                      const esHoy = fechaSeleccionada === hoyStr;
+                      const ocupado =
+                        Array.isArray(reservas) &&
+                        reservas.some(
+                          (r) =>
+                            String(r.canchaId) === String(canchaEditar?.id) &&
+                            r.fecha === fechaSeleccionada &&
+                            r.hora === hora,
+                        );
 
-                      const horaNumero = parseInt(hora.split(":")[0], 10);
-                      const horaActual = new Date().getHours();
-
-                      const estaPasado = esHoy && horaNumero <= horaActual;
-
-                      const estaReservado = reservas.some(
-                        (r) =>
-                          r.canchaId === canchaEditar.id &&
-                          r.fecha === fechaSeleccionada &&
-                          r.hora === hora,
-                      );
-
-                      const dehabilitado = estaPasado || estaReservado;
+                      const seleccionado = horarioSeleccionado === hora;
 
                       return (
                         <button
                           key={hora}
                           type="button"
                           onClick={() => setHorarioSeleccionado(hora)}
-                          className={`py-2 rounded-xl text-xs font-extrabold border transition-all ${dehabilitado ? "bg-slate-100 text-slate-300 border-slate-200 cursor-not-allowed line-through opacity-60" : horarioSeleccionado === hora ? "bg-emerald-600 text-white border-emerald-600 shadow-md scale-105" : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-emerald-50 hover:border-emerald-300"}`}
+                          className={`py-2 rounded-xl text-xs font-extrabold border transition-all ${ocupado ? "bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200 line-through" : seleccionado ? "bg-emerald-600 text-white border-emerald-600 shadow-md scale-105" : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-emerald-50 hover:border-emerald-300"}`}
                         >
-                          {hora} hs
+                          {hora} {ocupado && "(Ocupado)"}
                         </button>
                       );
                     })}
