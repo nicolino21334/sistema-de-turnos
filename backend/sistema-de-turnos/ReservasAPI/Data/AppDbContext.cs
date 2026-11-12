@@ -29,6 +29,7 @@ public class AppDbContext : DbContext
     //tablas de la base de datos
     public DbSet<Usuario> Usuarios { get; set; }
     public DbSet<Servicio> Servicios { get; set; }
+    public DbSet<Reserva> Resevas { get; set; }
    
     public DbSet<Turno> Turnos { get; set; } = null!;
 }
